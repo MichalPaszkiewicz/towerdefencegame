@@ -42,7 +42,7 @@
 }
 
 .pot.mushroom2{
-	background: url(thumpy.gif);
+	background: url(thumpy.gif) center;
 	max-width: 75px;
 	background-size: cover;
 }
