@@ -1,0 +1,275 @@
+<html>
+	<head>		
+    		<link rel="stylesheet" type="text/css" href="styles.css"/>
+	</head>
+	<body style="margin:0;">
+		<div id="main-container">
+			<div class="game-row" style="background: white;">
+				<div class="pot flower" onclick="selectThing(0)"></div>
+				<div class="pot mushroom" onclick="selectThing(1)"></div>
+				<div class="pot mushroom2" onclick="selectThing(2)"></div>
+				<div class="pot" onclick="selectThing(3)"></div>
+				<div class="pot" onclick="selectThing(4)"></div>
+				<div id="cashPot">50</div>
+			</div>
+			<div class="game-row" style="background: red;">
+				<div class="pot" onclick="buildThing(0, 0)"></div>
+				<div class="pot" onclick="buildThing(0, 1)"></div>
+				<div class="pot" onclick="buildThing(0, 2)"></div>
+				<div class="pot" onclick="buildThing(0, 3)"></div>
+				<div class="pot" onclick="buildThing(0, 4)"></div>
+				<div class="zombie"></div>
+			</div>
+			<div class="game-row" style="background: blue;">
+				<div class="pot" onclick="buildThing(1, 5)"></div>
+				<div class="pot" onclick="buildThing(1, 6)"></div>
+				<div class="pot" onclick="buildThing(1, 7)"></div>
+				<div class="pot" onclick="buildThing(1, 8)"></div>
+				<div class="pot" onclick="buildThing(1, 9)"></div>
+				<div class="zombie"></div>
+			</div>
+			<div class="game-row" style="background: green;">
+				<div class="pot" onclick="buildThing(2, 10)"></div>
+				<div class="pot" onclick="buildThing(2, 11)"></div>
+				<div class="pot" onclick="buildThing(2, 12)"></div>
+				<div class="pot" onclick="buildThing(2, 13)"></div>
+				<div class="pot" onclick="buildThing(2, 14)"></div>
+				<div class="zombie"></div>
+			</div>
+			<div class="game-row" style="background: purple;">
+				<div class="pot" onclick="buildThing(3, 15)"></div>
+				<div class="pot" onclick="buildThing(3, 16)"></div>
+				<div class="pot" onclick="buildThing(3, 17)"></div>
+				<div class="pot" onclick="buildThing(3, 18)"></div>
+				<div class="pot" onclick="buildThing(3, 19)"></div>
+				<div class="zombie"></div>
+			</div>
+			<div class="game-row" style="background: orange;">
+				<div class="pot" onclick="buildThing(4, 20)"></div>
+				<div class="pot" onclick="buildThing(4, 21)"></div>
+				<div class="pot" onclick="buildThing(4, 22)"></div>
+				<div class="pot" onclick="buildThing(4, 23)"></div>
+				<div class="pot" onclick="buildThing(4, 24)"></div>
+				<div class="zombie"></div>
+			</div>
+		</div>
+		<script>
+			var init = 1400;
+			var initSpeed = 0.5;
+			var currentScore = 0;
+			var rows = [];
+			function setupRows()
+			{
+				rows = [];
+				for(var i = 1; i < 6; i++){
+					rows.push({"seeds": [], "zombies": [], "pots": []});
+				}
+			}
+			setupRows();
+			var zombies = document.getElementsByClassName("zombie");
+			var array = [];
+			var cash = 50;
+			var flowers = [];
+			var mushrooms = [];
+			var seeds = [];
+			var newZombieCountdownInit = 100;
+			var newZombieCountdown =  newZombieCountdownInit;
+
+			var selectedThing = null;
+
+			for(var i = 0; i < zombies.length; i++)
+			{
+				array.push({x: init, v: initSpeed, health: 5});
+			}
+
+			function zombieFactory()
+			{
+				newZombieCountdown--;
+				if(newZombieCountdown == 0)
+				{
+					addRandomZombie();
+					 newZombieCountdownInit--;
+					newZombieCountdown =  newZombieCountdownInit;
+				}
+			}
+
+			function updateCashPot()
+			{
+				document.getElementById("cashPot").textContent = cash;
+			}
+
+			function addRandomZombie()
+			{
+				var rdm = Math.floor(5 * Math.random());
+				rows[rdm].zombies.push({x: init, v: initSpeed, health: 5});
+			}
+
+			function emptyPots()
+			{
+				for(var i = 0; i < rows.length; i++){
+					var rowElement = document.getElementsByClassName("game-row")[i + 1];
+					for(var j = 0; j < 5; j++){
+						var potElement = rowElement.getElementsByClassName("pot")[j];
+						potElement.className = potElement.className.replace("flower","").replace("mushroom","").replace("mushroom2","");
+					}
+				}
+			}
+			
+			function removeMushrooms()
+			{
+				mushrooms = [];
+			}
+
+			function removeSeeds()
+			{
+				for(var i = 0; i < rows.length; i++){
+					var rowElement = document.getElementsByClassName("game-row")[i + 1];
+					var seedElements = rowElement.getElementsByClassName("seed");
+					for(var j = 0; j < rows[i].seeds.length; j++){
+						var seedElement = seedElements[j];
+						seedElement.remove();
+					}
+				}
+			}
+
+			function resetCash()
+			{
+				cash = 50;
+				updateCashPot();
+			}
+			
+			function reset(){
+				var preText = "";
+			
+				if(currentScore >= localStorage.getItem("PvsZ-score"))
+				{
+					preText = "Well done! new ";
+					localStorage.setItem("PvsZ-score",currentScore);
+				}
+
+				currentScore = 0;
+				for(var i = 0; i < zombies.length; i++)
+				{
+					array[i].x = init;
+					array[i].v = initSpeed;
+				}
+				alert(preText + "high score: " + localStorage.getItem("PvsZ-score") + "\r\nStart?");
+				emptyPots();
+				//always remove seeds before setup rows
+				removeSeeds();
+				setupRows();
+				removeMushrooms();
+				resetCash();
+			}
+
+			reset();	
+
+			function anyZombieReachedEnd()
+			{
+				for(var i = 0; i < zombies.length; i++)
+				{
+					if( array[i].x <= 0 )
+					{ return true;}
+				}
+				return false;
+			}
+			
+			setInterval(function(){
+					if(anyZombieReachedEnd())
+					{ reset(); };
+				
+				currentScore += 1;
+				
+				for(var i = 0; i < mushrooms.length; i++)
+				{
+					mushrooms[i].timeLeft--;
+					if(mushrooms[i].timeLeft == 0){
+						var relevantRow = mushrooms[i].row;
+						var shroomRow = document.getElementsByClassName("game-row")[relevantRow + 1];
+						shroomRow.innerHTML += "<div class='seed'></div>";
+						rows[relevantRow].seeds.push({"x": 33, "v": 5});
+						mushrooms[i].timeLeft = 100;
+					}
+				}
+				for(var i = 0; i < rows.length; i++){
+					for(var j = 0; j < rows[i].seeds.length; j++){
+						rows[i].seeds[j].x += rows[i].seeds[j].v;
+						var rowElement = document.getElementsByClassName("game-row")[i + 1];
+						var seedElement = rowElement.getElementsByClassName("seed")[j];
+						if(seedElement != undefined){seedElement.setAttribute("style","left: " + rows[i].seeds[j].x + "px");}
+						if(rows[i].seeds[j].x >= 1500)
+						{
+							seedElement.remove();
+							rows[i].seeds.shift();
+						}
+					}
+				}								
+
+				for(var i = 0; i < flowers.length; i++)
+				{
+					flowers[i].timeLeft--;
+					//console.log(flowers[i].timeLeft);
+					if(flowers[i].timeLeft == 0){
+						cash += 25;
+						flowers[i].timeLeft = 200;
+						document.getElementById("cashPot").textContent = cash;
+					}
+				}
+
+				for(var i = 0; i < zombies.length; i++)
+				{
+					var blah = zombies[i];
+					array[i].x -= array[i].v;
+					//console.log("i: " + i + " array[i].x: " + array[i].x);
+					var colorString = " background: white;";
+					if(array[i].health == 4){ colorString = " background: yellow;"}
+					if(array[i].health == 3){ colorString = " background: rgb(235, 195, 36);"}
+					if(array[i].health == 2){ colorString = " background: orange;"}
+					if(array[i].health == 1){ colorString = " background: red;"}
+					if(array[i].health == 0){ colorString = " background: darkred;"}
+					blah.setAttribute("style","left: " + array[i].x + "px;" + colorString);
+					
+					for(var j = 0; j < rows[i].seeds.length; j++){
+						if(array[i].x <= rows[i].seeds[j].x)
+						{
+							killZombie(i);
+							var rowElement = document.getElementsByClassName("game-row")[i + 1];
+							var seedElement = rowElement.getElementsByClassName("seed")[j];
+							seedElement.remove();
+							rows[i].seeds.shift();
+						}
+					}
+				}}, 50);
+
+			function killZombie(num){
+				if(array[num].health > 0){ array[num].health--; }
+				else{
+					array[num].x = 1400;
+					array[num].v += 1/(array[num].v);
+					array[num].health = 5;
+				}
+			}
+
+			function buildThing(row, num){
+				var blah = document.getElementsByClassName("pot")[num + 5];
+				if(selectedThing == null){return;}
+				if(selectedThing == 0){
+					blah.className += " flower";
+					flowers.push({"timeLeft": 200});
+				}
+				if(selectedThing == 1){	
+					blah.className += " mushroom"; 
+					mushrooms.push({"row": row, "timeLeft": 50});
+				}// 33, 122, 214
+				if(selectedThing == 2){blah.className += " mushroom2"; }
+				cash -= 50;
+				updateCashPot();
+				selectedThing = null;
+			}
+
+			function selectThing(num){
+				if(cash >= 50){	selectedThing = num; }
+			}
+		</script>
+	</body>
+</html>

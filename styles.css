@@ -1,0 +1,74 @@
+.game-row{
+	height: 16%;
+	position: relative;
+	overflow-x: hidden;
+}
+
+.pot, .zombie{
+	display: inline-block;
+	float: left;
+	cursor: pointer;
+	margin: 5px;
+}
+
+.pot{
+	height: 80%; 
+	width:10%; 
+	border-radius: 10px; 
+	border: solid 3px black;
+	background: rgba(0,0,0,0.2);
+	display: inline-block;
+	max-width: 75px;
+}
+
+.pot:hover{
+	background: rgba(0,0,0,0.5);
+}
+
+.zombie{
+	position: absolute;
+	left: 1400;
+	background:white;
+	border-radius: 20px;
+	height: 80%;
+	width: 10%;
+	border: solid 3px darkgreen;
+}
+
+.pot.mushroom{
+	background: url(mushroom.png);
+	max-width: 75px;
+	background-size: cover;
+}
+
+.pot.mushroom2{
+	background: url(mushroom2.png);
+	max-width: 75px;
+	background-size: cover;
+}
+
+.pot.flower{
+	background: url(flower.png);
+	background-size: cover;
+}
+
+#cashPot{
+	margin: 5px;
+	border: gold 3px solid;
+	display: inline-block;
+	border-radius: 15px;
+	height: 80%;
+	font-size: -webkit-xxx-large;
+	padding: 0 5px;
+}
+
+.seed{
+	position: absolute;
+	top:30px;
+	left:30px;
+	background: green;
+	border: white 3px solid;
+	border-radius: 20px;
+	height: 20px;
+	width: 20px;
+}
