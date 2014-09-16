@@ -125,7 +125,7 @@
 				for(var i = 0; i < rows.length; i++){
 					var rowElement = document.getElementsByClassName("game-row")[i + 1];
 					var seedElements = rowElement.getElementsByClassName("seed");
-					for(var j = 0; j < rows[i].seeds.length; j++){
+					for(var j = rows[i].seeds.length - 1; j > -1; j--){
 						var seedElement = seedElements[j];
 						seedElement.remove();
 					}
